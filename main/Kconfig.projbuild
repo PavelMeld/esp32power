@@ -1,0 +1,57 @@
+menu "Operation mode"
+
+	choice OPERATION_MODE
+		prompt "Operation mode"
+		help
+			Select opration mode : 
+				Kitchen mode : 2-Lamps are used, select 1/2/both lamps with power switch/WIFI
+				Garage mode : 1-Lamp is controlled with dedicated flip-flop switch
+		config KITCHEN_MODE
+			bool "Kitchen mode"
+
+		config GARAGE_MODE
+			bool "Garage mode"
+
+	endchoice 
+
+	menu "Garage mode"
+		visible if GARAGE_MODE
+		choice GARAGE_MODE_SETUP
+			prompt "Garage mode setup"
+			help 
+				Select lamp controlled in GARAGE mode 
+			config GARAGE_LAMP1
+				bool "Use LAMP 1"
+
+			config GARAGE_LAMP2
+				bool "Use LAMP 2"
+
+			config GARAGE_BOTH_LAMPS
+				bool "Use both lamps"
+
+		endchoice
+	endmenu
+
+endmenu
+
+menu "WIFI"
+
+    config ESP_WIFI_SSID
+        string "WiFi SSID"
+        default "myssid"
+        help
+            SSID (network name) for the example to connect to.
+
+    config ESP_WIFI_PASSWORD
+        string "esp32"
+        default "123qweasd"
+        help
+            WiFi password (WPA or WPA2) for the example to use.
+
+    config ESP_MAX_STA_CONN
+        int "Maximal STA connections"
+        default 4
+        help
+            Max number of the STA connects to AP.
+
+endmenu

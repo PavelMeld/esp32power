@@ -1,0 +1,10 @@
+menu "Power sensor"
+
+    config POWER_PIN
+        int "Power sensor pin"
+        range 0 34
+        default 14
+        help
+            Power sensor optron output
+
+endmenu

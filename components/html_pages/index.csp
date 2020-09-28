@@ -1,0 +1,76 @@
+<#
+
+#include "lamp.h"
+#include "pages.h"
+#include "bt_discovery.h"
+
+#>
+
+<? update_last_web_action_time(); ?>
+
+<html>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<head>
+		<title>
+			Relay controller
+		</title>
+		<style>
+			.selected { background-color: rgb(200,250,200);}
+			div { background-color: rgb(200,200,200); border: 1px solid black; text-align: center; }
+
+		</style>
+		<script language="javascript">
+
+			function updateButtons(selected) {
+				[...document.getElementsByClassName("selected")].forEach(element=>element.classList.remove("selected"));
+				document.getElementById("lamp"+selected).classList.add("selected");
+			}
+
+			function set(value) {
+				fetch("/api/set", { method: "POST", body : "l=" + value })
+				.then(response => console.log(response));
+				updateButtons(value);
+			}
+
+			function update() {
+				fetch("/api/status", { method: "GET"})
+				.then(response => response.json())
+				.then(data => {
+					updateButtons(data.status);
+					setTimeout(update, 1000);
+				})
+				.catch(whatever => {
+					console.log("Network error");
+					setTimeout(update, 1000);
+				})
+			}
+
+			setTimeout(update, 1000);
+		</script>
+	</head>
+	<body>
+				<p>Lamp mode</p>
+<?
+	for (int n=0; n<3; n++) {
+?>
+			  <div id="lamp<%i n %>" onclick="set(<%i n %>)"> MODE <%i n+1 %> </div>
+<?
+	}
+?>
+				<p>Devices</p>
+<?
+	{
+		List_t	* device_list = bt_device_list();
+		ListItem_t	* item = listGET_HEAD_ENTRY(device_list);
+		while (item) {
+			device_info_t	* device_info = listGET_LIST_ITEM_OWNER(item);
+?>
+			<pre><%s device_info->name %> - <%s device_info->mac_str %></pre></br>
+<?
+			item = listGET_NEXT(item);
+		}
+	}
+?>
+			
+	</body>
+</html>

@@ -1,0 +1,32 @@
+menu "Lamp control"
+
+    config CH1_RELAY
+        int "Lamp1 control GPIO"
+        range 0 34
+        default 13
+        help
+            GPIO number (IOxx) to control RELAY 1.
+
+    config CH2_RELAY
+        int "Lamp2 control GPIO"
+        range 0 34
+        default 27
+        help
+            GPIO number (IOxx) to control RELAY 2.
+
+    config INDICATOR_PIN
+        int "Blue led flashing pin"
+        range 0 34
+        default 2
+        help
+            Set to 0 to disable blue led
+
+    config MANUAL_CONTROL_PIN
+        int "Control flip/flip connection pin"
+        range 0 34
+        default 15
+        help
+            Set to 0 to disable manual control
+
+
+endmenu
