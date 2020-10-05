@@ -103,9 +103,11 @@ void app_main()
 	printf("OK\n");
 
 
+#ifdef CONFIG_GARAGE_BT_ON
 	printf("Starting bluetooth ... ");
 	bt_init();
 	printf("OK\n");
+#endif
 
 	while (1) {
 		vTaskDelay(pdMS_TO_TICKS(1000));

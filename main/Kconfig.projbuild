@@ -28,7 +28,15 @@ menu "Operation mode"
 
 			config GARAGE_BOTH_LAMPS
 				bool "Use both lamps"
-
+		endchoice
+		choice GARAGE_BLUETOOTH
+			prompt "Bluetooth enabled"
+			help 
+				Select to enable bluetooth activation
+			config GARAGE_BT_ON
+				bool "YES"
+			config GARAGE_BT_OFF
+				bool "OFF"
 		endchoice
 	endmenu
 
