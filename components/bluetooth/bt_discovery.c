@@ -89,16 +89,60 @@ void clear_discovered_devices() {
 }
 
 
+ListItem_t * discovered_search(char * mac) {
+    ListItem_t      * entry;
+    int length = listCURRENT_LIST_LENGTH(&discovered_devices);
+
+	ESP_LOGI(GAP_TAG, "Current device list size = %X", length);
+
+	if (!length) {
+        return NULL;
+    }
+
+    entry = listGET_HEAD_ENTRY(&discovered_devices);
+
+    for (int n = 0; n < length && entry; n++) {
+        device_info_t	* device_info = listGET_LIST_ITEM_OWNER(entry);
+        
+        if (!memcmp(device_info->mac_str, mac, 6))
+            return entry;
+
+        entry = listGET_NEXT(entry);
+    }
+
+    return NULL;
+}
+
+
 void add_discovered_device(char * mac, uint8_t * name) {
-	ListItem_t		* new_item = calloc(1, sizeof(*new_item));
-	device_info_t	* device_info = calloc(1, sizeof(*device_info));
+	ListItem_t		* item;
+	device_info_t	* device_info;
+
+    item = discovered_search(mac);
+
+	ESP_LOGI(GAP_TAG, "Looking in Previous devices = %p\n", item);
+
+    if (item) {
+        device_info = listGET_LIST_ITEM_OWNER(item);
+        if (device_info->name == NULL && strlen((char *)name)) {
+            ESP_LOGI(GAP_TAG, "Added device name %x:%x:%x:%x:%x:%x %s\n", 
+                mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], (char *)name);
+            device_info->name = strdup((char*)name);
+        }
+        return;
+    }
+
+    item = calloc(1, sizeof(*item));
+    device_info = calloc(1, sizeof(*device_info));
 
 	device_info->mac_str = strdup(mac);
-	device_info->name = strdup((char*)name);
+    device_info->name = strlen((char*)name) ? strdup((char*)name) : NULL;
+    ESP_LOGI(GAP_TAG, "Added new device %x:%x:%x:%x:%x:%x %s\n", 
+        mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], (char *)name);
 
-	vListInitialiseItem(new_item);
-	listSET_LIST_ITEM_OWNER(new_item, device_info);
-	vListInsert(&discovered_devices, new_item);
+	vListInitialiseItem(item);
+	listSET_LIST_ITEM_OWNER(item, device_info);
+	vListInsert(&discovered_devices, item);
 }
 
 
@@ -197,11 +241,9 @@ static void update_device_info(esp_bt_gap_cb_param_t *param)
         switch (p->type) {
         case ESP_BT_GAP_DEV_PROP_COD:
             cod = *(uint32_t *)(p->val);
-            //ESP_LOGI(GAP_TAG, "--Class of Device: 0x%x", cod);
             break;
         case ESP_BT_GAP_DEV_PROP_RSSI:
             rssi = *(int8_t *)(p->val);
-            //ESP_LOGI(GAP_TAG, "--RSSI: %d", rssi);
             break;
         case ESP_BT_GAP_DEV_PROP_BDNAME: {
             uint8_t len = (p->len > ESP_BT_GAP_MAX_BDNAME_LEN) ? ESP_BT_GAP_MAX_BDNAME_LEN :
@@ -226,7 +268,7 @@ static void update_device_info(esp_bt_gap_cb_param_t *param)
 			strcpy((char *)bdname, "<undefined>");
     }
 
-	ESP_LOGI(GAP_TAG, "Found device, address %s, name %s", bda_str, bdname);
+	ESP_LOGI(GAP_TAG, "Adding : address %s, name %s", bda_str, bdname);
 	add_discovered_device(bda_str, bdname);
 }
 
@@ -330,6 +372,7 @@ void bt_discovery_task()
     esp_bt_gap_register_callback(bt_app_gap_cb);
 
 	// Discovery loop
+    clear_discovered_devices();
 	discovery_event_queue = xQueueCreate(10, sizeof(uint32_t));
 	while (1) {
 		uint32_t	evt;
@@ -346,9 +389,11 @@ void bt_discovery_task()
 			continue;
 		}
 
-		ESP_LOGI(GAP_TAG, "Starting discovery");
+        if (0) {
+            clear_discovered_devices();
+        }
 
-		clear_discovered_devices();
+		ESP_LOGI(GAP_TAG, "Starting discovery");
 
 		start_discovery();
         BaseType_t ret = xQueueReceive(discovery_event_queue , &evt, portMAX_DELAY);

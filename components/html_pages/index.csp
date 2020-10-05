@@ -62,7 +62,9 @@
 	{
 		List_t	* device_list = bt_device_list();
 		ListItem_t	* item = listGET_HEAD_ENTRY(device_list);
-		while (item) {
+        int length = listCURRENT_LIST_LENGTH(device_list);
+
+		for (int n = 0; n < length && item ; n++) {
 			device_info_t	* device_info = listGET_LIST_ITEM_OWNER(item);
 ?>
 			<pre><%s device_info->name %> - <%s device_info->mac_str %></pre></br>
