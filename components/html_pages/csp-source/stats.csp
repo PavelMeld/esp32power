@@ -1,0 +1,97 @@
+<#
+#include "lwip/stats.h"
+#include "http.h"
+#>
+<html>
+<head>
+	<title>Megatrans 3.5 statistics page</title>
+	<link rel="STYLESHEET" href="/default.css" type="text/css">
+	<meta http-equiv="Refresh" Content="2">
+</head>
+<body bgcolor=#FFFFFF>
+	<h1>Megatrans 3.5 statistics page</h1>
+	<h2>TCP/IP statistics</h2>
+		
+	<table class="stats">
+		<tr>
+			<th><pre> </pre></th>
+			<th>IP</th>
+			<th>IP frag</th>
+			<th>TCP</th>
+		</tr>
+
+	    <tr><td class="tdleft">Transmitted packets:</td>
+			<td><%i lwip_stats.ip.xmit %></td>
+			<td><%i lwip_stats.ip_frag.xmit %></td>
+			<td><%i lwip_stats.tcp.xmit %></td>
+		</tr>
+
+    	<tr><td class="tdleft">Retransmitted packets:</td>
+			<td><%i lwip_stats.ip.rexmit %></td>
+			<td><%i lwip_stats.ip_frag.rexmit %></td>
+			<td><%i lwip_stats.tcp.rexmit %></td>
+		</tr>
+
+    	<tr><td class="tdleft">Received packets:</td>
+			<td><%i lwip_stats.ip.recv %></td>
+			<td><%i lwip_stats.ip_frag.recv %></td>
+			<td><%i lwip_stats.tcp.recv %></td>
+		</tr>
+
+    	<tr><td class="tdleft">Forwarded packets:</td>
+			<td><%i lwip_stats.ip.fw %></td>
+			<td><%i lwip_stats.ip_frag.fw %></td>
+			<td><%i lwip_stats.tcp.fw %></td>
+		</tr>
+
+    	<tr><td class="tdleft">Dropped packets:</td>
+			<td><%i lwip_stats.ip.drop %></td>
+			<td><%i lwip_stats.ip_frag.drop %></td>
+			<td><%i lwip_stats.tcp.drop %></td>
+		</tr>
+
+    	<tr><td class="tdleft">Checksum error:       </td>
+			<td><%i lwip_stats.ip.chkerr %></td>
+			<td><%i lwip_stats.ip_frag.chkerr %></td>
+			<td><%i lwip_stats.tcp.chkerr %></td>
+		</tr>
+
+    	<tr><td class="tdleft">Invalid length error: </td>
+			<td><%i lwip_stats.ip.lenerr %></td>
+			<td><%i lwip_stats.ip_frag.lenerr %></td>
+			<td><%i lwip_stats.tcp.lenerr %></td>
+		</tr>
+
+    	<tr><td class="tdleft">Out of memory error:  </td>
+			<td><%i lwip_stats.ip.memerr %></td>
+			<td><%i lwip_stats.ip_frag.memerr %></td>
+			<td><%i lwip_stats.tcp.memerr %></td>
+		</tr>
+
+    	<tr><td class="tdleft">Routing error:        </td>
+			<td><%i lwip_stats.ip.rterr %></td>
+			<td><%i lwip_stats.ip_frag.rterr %></td>
+			<td><%i lwip_stats.tcp.rterr %></td>
+		</tr> 
+
+    	<tr><td class="tdleft">Protocol error:       </td>
+			<td><%i lwip_stats.ip.proterr %></td>
+			<td><%i lwip_stats.ip_frag.proterr %></td>
+			<td><%i lwip_stats.tcp.proterr %></td>
+		</tr>
+
+  		<tr><td class="tdleft">Error in options:     </td>
+			<td><%i lwip_stats.ip.opterr %></td>
+			<td><%i lwip_stats.ip_frag.opterr %></td>
+			<td><%i lwip_stats.tcp.opterr %></td>
+		</tr>
+
+  		<tr><td class="tdleft">Misc error:           </td>
+			<td><%i lwip_stats.ip.err %></td>
+			<td><%i lwip_stats.ip_frag.err %></td>
+			<td><%i lwip_stats.tcp.err %></td>
+		</tr>
+
+	</table>
+</body>
+</html>
